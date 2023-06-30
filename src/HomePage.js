@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from 'react';
+import Calendar from 'react-calendar';
 import './HomePage.css';
 
-
 function HomePage() {
-
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedView, setSelectedView] = useState('calendar');
   const [tasks, setTasks] = useState([]);
   const [showNewTaskPopup, setShowNewTaskPopup] = useState(false);
   const [title, setTitle] = useState('');
   const [details, setDetails] = useState('');
 
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+  };
 
   useEffect(() => {
     const storedTasks = localStorage.getItem('tasks');
@@ -40,6 +43,12 @@ function HomePage() {
     setShowNewTaskPopup(false);
   };
 
+  const handleDeleteTask = (index) => {
+    const updatedTasks = [...tasks];
+    updatedTasks.splice(index, 1);
+    setTasks(updatedTasks);
+  };
+
   return (
     <div className="home-page">
       <h1 className="home-title">Scheduler</h1>
@@ -58,32 +67,39 @@ function HomePage() {
         </button>
       </div>
       <button className="new-task-button" onClick={handleNewTaskClick}>
-            Create New Task
-          </button>
-          {selectedView === 'taskList' && (
-  <>
-    <h2>Tasks:</h2> {/* Move the "Tasks" heading outside the task-list div */}
-    <div className="task-list">
-      {tasks && tasks.length > 0 ? (
-        tasks.map((task, index) => (
-          <div key={index} className="task-item">
-            <h3>{task.title}</h3>
-            <p>{task.details}</p>
-          </div>
-        ))
-      ) : (
-        <p>No tasks found.</p>
-      )}
+        Create New Task
+      </button>
+      {selectedView === 'calendar' && (
+  <div className="calendar-view">
+    <h2>Calendar View:</h2>
+    <div>
+      <Calendar onChange={handleDateChange} value={selectedDate} />
     </div>
-  </>
+  </div>
 )}
 
-
+      {selectedView === 'taskList' && (
+        <>
+          <h2>Tasks:</h2>
+          <div className="task-list">
+            {tasks && tasks.length > 0 ? (
+              tasks.map((task, index) => (
+                <div key={index} className="task-item">
+                  <h3>{task.title}</h3>
+                  <p>{task.details}</p>
+                  <button onClick={() => handleDeleteTask(index)}>Delete</button>
+                </div>
+              ))
+            ) : (
+              <p>No tasks found.</p>
+            )}
+          </div>
+        </>
+      )}
       {showNewTaskPopup && (
-  <div className="new-task-popup">
-    <h2 className="new-task-popup-title">New Task</h2>
-    {/* Input fields for task information */}
-    <input
+        <div className="new-task-popup">
+          <h2 className="new-task-popup-title">New Task</h2>
+          <input
             type="text"
             placeholder="Task Title"
             value={title}
@@ -94,27 +110,16 @@ function HomePage() {
             value={details}
             onChange={(e) => setDetails(e.target.value)}
           />
-    {/* Date and Time picker can be added here */}
-    {/* Save and Cancel buttons */}
-    <div className="new-task-popup-buttons">
-      <button className="save-task-button" onClick={() => handleSaveNewTask()}>
-        Save
-      </button>
-      <button className="cancel-task-button" onClick={() => setShowNewTaskPopup(false)}>
-        Cancel
-      </button>
-    </div>
-  </div>
-)}
-
-
-
-
-
-
-
-
-
+          <div className="new-task-popup-buttons">
+            <button className="save-task-button" onClick={() => handleSaveNewTask()}>
+              Save
+            </button>
+            <button className="cancel-task-button" onClick={() => setShowNewTaskPopup(false)}>
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
