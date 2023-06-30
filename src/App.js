@@ -12,9 +12,6 @@ function App() {
     <div>
         
 
-      <Routes>
-        <Route path="/welcomepage" element={ <WelcomePage/> } />
-      </Routes>
     </div>
   );
 }

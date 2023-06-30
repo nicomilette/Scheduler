@@ -4,6 +4,9 @@
   align-items: center;
   justify-content: center;
   height: 100vh;
+  background-color: #1a1a1a;
+  color: #fff;
+  font-family: 'Arial', sans-serif;
 }
 
 .welcome-title {
@@ -12,15 +15,16 @@
 }
 
 .enter-button {
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: #007bff;
+  margin-right: 10px;
+  background-color: #222;
   color: #fff;
   border: none;
-  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 16px;
+  font-weight: bold;
   cursor: pointer;
 }
 
 .enter-button:hover {
-  background-color: #0056b3;
+  background-color: #666;
 }

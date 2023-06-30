@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './HomePage.css'; // Import the CSS file for styling
+import './HomePage.css';
 
 function HomePage() {
   const [selectedView, setSelectedView] = useState('calendar');
@@ -15,7 +15,7 @@ function HomePage() {
 
   return (
     <div className="home-page">
-      <h1 className="home-title">Welcome to the Schedule Maker</h1>
+      <h1 className="home-title">Scheduler</h1>
       <div className="view-options">
         <button
           className={`view-button ${selectedView === 'calendar' ? 'active' : ''}`}
@@ -38,3 +38,4 @@ function HomePage() {
 }
 
 export default HomePage;
+

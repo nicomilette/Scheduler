@@ -20,11 +20,11 @@ function WelcomePage() {
 
   return (
     <div className="welcome-page">
-      <h1 className="welcome-title">Welcome to the schedule maker</h1>
+      <h1 className="welcome-title">Welcome to the Scheduler</h1>
       
 
       <Link to="/homepage">
-          <button onClick={handleOpenHomePage}>Go to Lorem Ipsum</button>
+          <button className="enter-button" onClick={handleOpenHomePage}>Open app</button>
         </Link>
         <Routes> <Route path="/HomePage" exact element={<HomePage/>} /> </Routes>
     </div>
