@@ -19,6 +19,7 @@ function HomePage() {
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const popupRef = useRef(null);
 
+  const [dateString, setDateString] = useState("");
 
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -44,6 +45,7 @@ function HomePage() {
 
   const handleMouseDown = (e) => {
     if (e.target === popupRef.current) {
+      e.preventDefault();
       setIsDragging(true);
       const xOffset = e.clientX - dragPosition.x;
       const yOffset = e.clientY - dragPosition.y;
@@ -93,7 +95,8 @@ function HomePage() {
       let isValid = true;
   
       // Convert ISO string format to YYYY-MM-DD format
-      const convertedDate = date;
+      
+      const convertedDate = selectedDate.toISOString().split('T')[0];
   
 
   
@@ -158,21 +161,36 @@ function HomePage() {
       {selectedView === 'calendar' && (
   <div className="calendar-view">
     <div>
-      <Calendar
-        onChange={handleDateChange}
-        value={selectedDate}
-        calendarType="US"
-        activeStartDate={today}
-        onClickDay={(date) => {
-          setSelectedDate(date);
-          setShowNewTaskPopup(true);
-        }}
-        onActiveStartDateChange={({ value, activeStartDate, action }) => {
-          if (action === 'next' || action === 'prev') {
-            setToday(new Date(activeStartDate));
-          }
-        }}
-      />
+    <Calendar
+  onChange={handleDateChange}
+  value={selectedDate}
+  calendarType="US"
+  activeStartDate={today}
+  onClickDay={(date) => {
+    setSelectedDate(date);
+    setShowNewTaskPopup(true);
+  }}
+  onActiveStartDateChange={({ value, activeStartDate, action }) => {
+    if (action === 'next' || action === 'prev') {
+      setToday(new Date(activeStartDate));
+    }
+  }}
+  tileContent={({ date, view }) => {
+    const tasksOnDay = tasks.filter((task) => {
+      const taskDate = new Date(new Date(task.date).setDate(new Date(task.date).getDate() + 1)).toLocaleDateString();
+      return taskDate === date.toLocaleDateString();
+    });
+
+    return (
+      <div className="my-tile-content">
+        {tasksOnDay.map((task, index) => (
+          <p key={index} className="my-calendar-task">{task.title}</p>
+        ))}
+      </div>
+    );
+  }}
+/>
+
     </div>
   </div>
 )}
@@ -191,20 +209,21 @@ function HomePage() {
           <div key={index} className="task-item">
             <h3>{task.title}</h3>
             {task.date && (
-              <>
-                <p>
-                  {new Date(task.date).toLocaleDateString()}{' '}
-                  {task.time && <span>{task.time}</span>}
-                </p>
-                <p>{task.details}</p>
-                {/* Check if task is past due */}
-                {new Date(task.date) < new Date() && (
-                  <div className="past-due">
-                    <p className="past-due-label">Past Due</p>
-                  </div>
-                )}
-              </>
+         <>
+            <p>
+              {new Date(new Date(task.date).setDate(new Date(task.date).getDate() + 1)).toLocaleDateString()}{' '}
+              {task.time && <span>{task.time}</span>}
+            </p>
+            <p>{task.details}</p>
+            {/* Check if task is past due */}
+            {new Date(task.date) < new Date() && (
+              <div className="past-due">
+                <p className="past-due-label">Past Due</p>
+              </div>
             )}
+          </>
+        )}
+
             {!task.date && (
               <p>No date specified</p>
             )}
@@ -242,7 +261,7 @@ function HomePage() {
             type="text"
             placeholder="Date (YYYY-MM-DD)"
             value={selectedDate.toISOString().split('T')[0]}
-            onChange={(e) => {setSelectedDate(e.target.value); setDate(selectedDate.toISOString().split('T')[0])}}
+            onChange={(e) => setDate(e.target.value)}
           />
           <input
             type="text"
