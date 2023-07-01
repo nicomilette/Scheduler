@@ -1,13 +1,16 @@
 /* existing imports */
 import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { HashRouter, RouterProvider } from "react-router-dom";
+import * as ReactDOM from "react-dom/client";
+import {
+  createBrowserRouter,
+  RouterProvider,
+} from "react-router-dom";
 import "./index.css";
 import HomePage from "./HomePage";
 import WelcomePage from "./WelcomePage";
 import ErrorPage from "./ErrorPage";
 
-const routes = [
+const router = createBrowserRouter([
   {
     path: "/",
     element: <WelcomePage />,
@@ -21,16 +24,14 @@ const routes = [
     path: "/welcomepage",
     element: <WelcomePage />,
   },
-];
+]);
 
-ReactDOM.render(
+ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <HashRouter>
-      <RouterProvider routes={routes} />
-    </HashRouter>
-  </React.StrictMode>,
-  document.getElementById("root")
+    <RouterProvider router={router} />
+  </React.StrictMode>
 );
+
 
 /*
 
