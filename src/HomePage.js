@@ -167,10 +167,6 @@ function HomePage() {
   value={selectedDate}
   calendarType="US"
   activeStartDate={today}
-  onClickDay={(date) => {
-    setSelectedDate(date);
-    setShowNewTaskPopup(true);
-  }}
   onActiveStartDateChange={({ value, activeStartDate, action }) => {
     if (action === 'next' || action === 'prev') {
       setToday(new Date(activeStartDate));
@@ -193,6 +189,15 @@ function HomePage() {
             {task.title}
           </button>
         ))}
+
+
+        <div className="my-new-class-calendar">
+          <button className="my-new-task-calendar" onClick={() => (
+            setShowNewTaskPopup(true),
+          setSelectedDate(date)
+    )}
+        >+</button>
+        </div>
       </div>
     );
   }}
