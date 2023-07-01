@@ -18,6 +18,7 @@ function HomePage() {
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const popupRef = useRef(null);
+  const [selectedTaskIndex, setSelectedTaskIndex] = useState(-1);
 
   const [dateString, setDateString] = useState("");
 
@@ -184,7 +185,13 @@ function HomePage() {
     return (
       <div className="my-tile-content">
         {tasksOnDay.map((task, index) => (
-          <p key={index} className="my-calendar-task">{task.title}</p>
+          <button
+            key={index}
+            className="my-calendar-task"
+            onClick={() => setSelectedTaskIndex(index)}
+          >
+            {task.title}
+          </button>
         ))}
       </div>
     );
@@ -277,6 +284,18 @@ function HomePage() {
               Cancel
             </button>
           </div>
+        </div>
+      )}
+
+
+
+      {selectedTaskIndex !== -1 && (
+        <div className="task-popup">
+          <h2>{tasks[selectedTaskIndex].title}</h2>
+          <p>Date: {tasks[selectedTaskIndex].date}</p>
+          <p>Time: {tasks[selectedTaskIndex].time}</p>
+          <p>Details: {tasks[selectedTaskIndex].details}</p>
+          <button onClick={() => setSelectedTaskIndex(-1)}>Close</button>
         </div>
       )}
 
