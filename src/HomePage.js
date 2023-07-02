@@ -4,6 +4,9 @@ import './HomePage.css';
 import './Calendar.css';
 
 function HomePage() {
+
+
+  {/*DATA MEMBERS*/}
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedView, setSelectedView] = useState('calendar');
   const [tasks, setTasks] = useState([]);
@@ -133,8 +136,10 @@ function HomePage() {
   };
 
  
-
+{/*BUTTON*/}
   return (
+
+
     <div className="home-page">
       <h1 className="home-title">Scheduler</h1>
 
@@ -159,48 +164,59 @@ function HomePage() {
 
       </div>
 
+
+
+{/*CALENDAR*/}
+
+
       {selectedView === 'calendar' && (
-  <div className="calendar-view">
-    <div>
-    <Calendar
-  onChange={handleDateChange}
-  value={selectedDate}
-  calendarType="US"
-  activeStartDate={today}
-  onActiveStartDateChange={({ value, activeStartDate, action }) => {
-    if (action === 'next' || action === 'prev') {
-      setToday(new Date(activeStartDate));
-    }
-  }}
-  tileContent={({ date, view }) => {
-    const tasksOnDay = tasks.filter((task) => {
-      const taskDate = new Date(new Date(task.date).setDate(new Date(task.date).getDate() + 1)).toLocaleDateString();
-      return taskDate === date.toLocaleDateString();
-    });
+        <div className="calendar-view">
+          <div>
+          <Calendar
+        onChange={handleDateChange}
+        value={selectedDate}
+        calendarType="US"
+        activeStartDate={today}
+        onActiveStartDateChange={({ value, activeStartDate, action }) => {
+          if (action === 'next' || action === 'prev') {
+            setToday(new Date(activeStartDate));
+          }
+        }}
+          tileContent={({ date, view }) => {
+            const tasksOnDay = tasks.filter((task) => {
+              const taskDate = new Date(new Date(task.date).setDate(new Date(task.date).getDate() + 1)).toLocaleDateString();
+              return taskDate === date.toLocaleDateString();
+            });
 
-    return (
-      <div className="my-tile-content">
-        {tasksOnDay.map((task, index) => (
-          <button
-            key={index}
-            className="my-calendar-task"
-            onClick={() => setSelectedTaskIndex(index)}
-          >
-            {task.title}
-          </button>
-        ))}
-
-
-        <div className="my-new-class-calendar">
-          <button className="my-new-task-calendar" onClick={() => (
-            setShowNewTaskPopup(true),
-          setSelectedDate(date)
-    )}
-        >+</button>
-        </div>
-      </div>
-    );
-  }}
+            return (
+              <div className="my-tile-content">
+                {tasksOnDay.map((task, index) => {
+                  return (
+                    <button
+                      key={index}
+                      className="my-calendar-task"
+                      onClick={() => setSelectedTaskIndex(index)}
+                    >
+                      {task.title}
+                    </button>
+                  );
+                })}
+            
+                <div className="my-new-class-calendar">
+                  <button
+                    className="my-new-task-calendar"
+                    onClick={() => {
+                      setShowNewTaskPopup(true);
+                      setSelectedDate(date);
+                    }}
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+            );
+            
+          }}
 />
 
     </div>
@@ -208,47 +224,54 @@ function HomePage() {
 )}
 
 
-{selectedView === 'taskList' && (
-  <div className="task-list">
-    {tasks && tasks.length > 0 ? (
-      tasks
-        .sort((task1, task2) => {
-          const taskDate1 = new Date(task1.date);
-          const taskDate2 = new Date(task2.date);
-          return taskDate1 - taskDate2;
-        })
-        .map((task, index) => (
-          <div key={index} className="task-item">
-            <h3>{task.title}</h3>
-            {task.date && (
-         <>
-            <p>
-              {new Date(new Date(task.date).setDate(new Date(task.date).getDate() + 1)).toLocaleDateString()}{' '}
-              {task.time && <span>{task.time}</span>}
-            </p>
-            <p>{task.details}</p>
-            {/* Check if task is past due */}
-            {new Date(task.date) < new Date() && (
-              <div className="past-due">
-                <p className="past-due-label">Past Due</p>
-              </div>
-            )}
-          </>
-        )}
-
-            {!task.date && (
-              <p>No date specified</p>
-            )}
-            <button onClick={() => handleDeleteTask(index)}>Delete</button>
-          </div>
-        ))
-    ) : (
-      <p>No tasks</p>
-    )}
-  </div>
-)}
+{/*TASK LIST*/}
 
 
+        {selectedView === 'taskList' && (
+          <div className="task-list">
+            {tasks && tasks.length > 0 ? (
+              tasks
+                .sort((task1, task2) => {
+                  const taskDate1 = new Date(task1.date);
+                  const taskDate2 = new Date(task2.date);
+                  return taskDate1 - taskDate2;
+                })
+                .map((task, index) => (
+                  <div key={index} className="task-item">
+                    <h3>{task.title}</h3>
+                    {task.date && (
+                <>
+                    <p>
+                      {new Date(new Date(task.date).setDate(new Date(task.date).getDate() + 1)).toLocaleDateString()}{' '}
+                      {task.time && <span>{task.time}</span>}
+                    </p>
+                    <p>{task.details}</p>
+                    {/* Check if task is past due */}
+                    {new Date(task.date) < new Date() && (
+                      <div className="past-due">
+                        <p className="past-due-label">Past Due</p>
+                      </div>
+                    )}
+                  </>
+                )}
+
+                  {!task.date && (
+                    <p>No date specified</p>
+                  )}
+                  <button onClick={() => handleDeleteTask(index)}>Delete</button>
+                </div>
+              ))
+          ) : (
+            <p>No tasks</p>
+          )}
+        </div>
+      )}
+
+
+
+
+
+{/*NEW TASK POPUP*/}
 
 
       {showNewTaskPopup && (
@@ -294,16 +317,15 @@ function HomePage() {
 
 
 
-      {selectedTaskIndex !== -1 && (
-        <div className="task-popup">
-          <h2>{tasks[selectedTaskIndex].title}</h2>
-          <p>Date: {tasks[selectedTaskIndex].date}</p>
-          <p>Time: {tasks[selectedTaskIndex].time}</p>
-          <p>Details: {tasks[selectedTaskIndex].details}</p>
-          <button onClick={() => setSelectedTaskIndex(-1)}>Close</button>
-        </div>
-      )}
-
+{selectedTaskIndex !== -1 && (
+  <div className="task-popup">
+    <h2>{tasks[selectedTaskIndex].title}</h2>
+    <p>Date: {tasks[selectedTaskIndex].date}</p>
+    <p>Time: {tasks[selectedTaskIndex].time}</p>
+    <p>Details: {tasks[selectedTaskIndex].details}</p>
+    <button onClick={() => setSelectedTaskIndex(-1)}>Close</button>
+  </div>
+)}
 
 
 

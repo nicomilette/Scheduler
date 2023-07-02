@@ -60,7 +60,6 @@
 
 .new-task-popup {
   position: fixed;
-  transform: translate(-75%, -75%);
   background-color: #1a1a1a;
   color: #fff;
   padding: 20px;
@@ -254,4 +253,42 @@
 
 .cancel-task-button:hover{
   background-color: #666;
+}
+
+
+.task-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #444;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.task-popup h2 {
+  margin-top: 0;
+}
+
+.task-popup p {
+  margin: 10px 0;
+}
+
+.task-popup button {
+  background-color: #4caf50;
+  color: #ffffff;
+  border: none;
+  padding: 8px 16px;
+  font-size: 14px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.task-popup button:hover {
+  background-color: #45a049;
+}
+
+.task-popup button:focus {
+  outline: none;
 }
