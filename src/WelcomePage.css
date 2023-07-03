@@ -14,8 +14,9 @@
   margin-bottom: 20px;
 }
 
-.enter-button {
-  margin-right: 10px;
+.login-button,
+.signup-button {
+  margin-top: 10px;
   background-color: #222;
   color: #fff;
   border: none;
@@ -26,6 +27,20 @@
   border-radius: 10px;
 }
 
-.enter-button:hover {
+.login-button:hover,
+.signup-button:hover {
   background-color: #666;
+}
+
+.input-container {
+  margin-bottom: 10px;
+}
+
+input[type='text'],
+input[type='password'] {
+  width: 200px;
+  padding: 8px;
+  border-radius: 5px;
+  border: none;
+  margin-right: 10px;
 }
