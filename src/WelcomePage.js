@@ -24,79 +24,62 @@ function WelcomePage() {
     setPassword(event.target.value);
   };
 
-  const handleLogin = (event) => {
+  const handleSignUp = (event) => {
     event.preventDefault();
-
-
-
   
-    bcrypt.hash(password, 10, (err, hashedPassword) => {
-      if (err) {
-        console.error('Error hashing password:', err);
-        return;
-      }
+    const hashedPassword = bcrypt.hashSync(password, 10);
+
+    Axios.post('http://localhost:3001/register', {
+      username: username,
+      password: hashedPassword, // Send the plain password to the server
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          const successElement = document.getElementById('error-message');
+          successElement.style.color = 'green';
+          successElement.textContent = 'Account created successfully - press login';
   
-      Axios.post('http://localhost:3001/login', {
-        username: username,
-        password: hashedPassword,
-      }).catch((error) => {
+          setTimeout(() => {
+            successElement.textContent = ''; // Clear the success message
+          }, 2000); // Display for 2 seconds (2000 milliseconds)
+        }
+        console.log(response);
+      })
+      .catch((error) => {
         if (error.response && error.response.status === 409) {
           const errorMessage = error.response.data;
           const errorElement = document.getElementById('error-message');
           errorElement.style.color = 'red';
           errorElement.textContent = errorMessage;
-
+  
           setTimeout(() => {
             errorElement.textContent = ''; // Clear the error message
           }, 2000); // Display for 2 seconds (2000 milliseconds)
         }
       });
-    });
-    
-
-    };
+  };
   
-
-
-  const handleSignUp = (event) => {
+  const handleLogin = (event) => {
     event.preventDefault();
   
-    bcrypt.hash(password, 10, (err, hashedPassword) => {
-      if (err) {
-        console.error('Error hashing password:', err);
-        return;
+    const hashedPassword = bcrypt.hashSync(password, 10);
+    Axios.post('http://localhost:3001/login', {
+      username: username,
+      password: hashedPassword, // Send the plain password to the server
+    }).catch((error) => {
+      if (error.response && error.response.status === 409) {
+        const errorMessage = error.response.data;
+        const errorElement = document.getElementById('error-message');
+        errorElement.style.color = 'red';
+        errorElement.textContent = errorMessage;
+  
+        setTimeout(() => {
+          errorElement.textContent = ''; // Clear the error message
+        }, 2000); // Display for 2 seconds (2000 milliseconds)
       }
-  
-      Axios.post('http://localhost:3001/register', {
-        username: username,
-        password: hashedPassword,
-      })
-        .then((response) => {
-          if (response.status === 200) {
-            const successElement = document.getElementById('error-message');
-            successElement.style.color = 'green';
-            successElement.textContent = 'Account created successfully - press login';
-  
-            setTimeout(() => {
-              successElement.textContent = ''; // Clear the success message
-            }, 2000); // Display for 2 seconds (2000 milliseconds)
-          }
-          console.log(response);
-        })
-        .catch((error) => {
-          if (error.response && error.response.status === 409) {
-            const errorMessage = error.response.data;
-            const errorElement = document.getElementById('error-message');
-            errorElement.style.color = 'red';
-            errorElement.textContent = errorMessage;
-  
-            setTimeout(() => {
-              errorElement.textContent = ''; // Clear the error message
-            }, 2000); // Display for 2 seconds (2000 milliseconds)
-          }
-        });
     });
   };
+  
   
   
   
