@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import './WelcomePage.css'; // Import the CSS file for styling
 import { BrowserRouter as Router, Link, Route, Routes, useNavigate } from 'react-router-dom';
-
+import Axios from 'axios';
 import HomePage from './HomePage';
+import bcrypt from 'bcryptjs'
 
 function WelcomePage() {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [loginStatus, setLoginStatus] = useState(false);
+
 
   const handleOpenHomePage = () => {
     navigate('/homepage');
@@ -23,17 +26,83 @@ function WelcomePage() {
 
   const handleLogin = (event) => {
     event.preventDefault();
-    // Perform login logic here
-    console.log('Username:', username);
-    console.log('Password:', password);
-  };
+
+
+
+  
+    bcrypt.hash(password, 10, (err, hashedPassword) => {
+      if (err) {
+        console.error('Error hashing password:', err);
+        return;
+      }
+  
+      Axios.post('http://localhost:3001/login', {
+        username: username,
+        password: hashedPassword,
+      }).catch((error) => {
+        if (error.response && error.response.status === 409) {
+          const errorMessage = error.response.data;
+          const errorElement = document.getElementById('error-message');
+          errorElement.style.color = 'red';
+          errorElement.textContent = errorMessage;
+
+          setTimeout(() => {
+            errorElement.textContent = ''; // Clear the error message
+          }, 2000); // Display for 2 seconds (2000 milliseconds)
+        }
+      });
+    });
+    
+
+    };
+  
+
 
   const handleSignUp = (event) => {
     event.preventDefault();
-    // Perform signup logic here
-    console.log('Username:', username);
-    console.log('Password:', password);
+  
+    bcrypt.hash(password, 10, (err, hashedPassword) => {
+      if (err) {
+        console.error('Error hashing password:', err);
+        return;
+      }
+  
+      Axios.post('http://localhost:3001/register', {
+        username: username,
+        password: hashedPassword,
+      })
+        .then((response) => {
+          if (response.status === 200) {
+            const successElement = document.getElementById('error-message');
+            successElement.style.color = 'green';
+            successElement.textContent = 'Account created successfully - press login';
+  
+            setTimeout(() => {
+              successElement.textContent = ''; // Clear the success message
+            }, 2000); // Display for 2 seconds (2000 milliseconds)
+          }
+          console.log(response);
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 409) {
+            const errorMessage = error.response.data;
+            const errorElement = document.getElementById('error-message');
+            errorElement.style.color = 'red';
+            errorElement.textContent = errorMessage;
+  
+            setTimeout(() => {
+              errorElement.textContent = ''; // Clear the error message
+            }, 2000); // Display for 2 seconds (2000 milliseconds)
+          }
+        });
+    });
   };
+  
+  
+  
+  
+  
+
 
   return (
     <div className="welcome-page">
@@ -58,6 +127,7 @@ function WelcomePage() {
           <button type="submit" className="signup-button" onClick={handleSignUp}>
             Sign up
           </button>
+          <div id="error-message"></div>
         </div>
       </form>
       <Routes>

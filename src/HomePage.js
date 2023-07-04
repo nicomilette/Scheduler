@@ -23,7 +23,6 @@ function HomePage() {
   const popupRef = useRef(null);
   const [selectedTaskIndex, setSelectedTaskIndex] = useState(-1);
 
-  const [dateString, setDateString] = useState("");
 
   useEffect(() => {
     const handleMouseMove = (e) => {
