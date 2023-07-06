@@ -46,7 +46,7 @@ function WelcomePage() {
         console.log(response);
       })
       .catch((error) => {
-        if (error.response && error.response.status === 409) {
+        if (error.response) {
           const errorMessage = error.response.data;
           const errorElement = document.getElementById('error-message');
           errorElement.style.color = 'red';
@@ -62,12 +62,23 @@ function WelcomePage() {
   const handleLogin = (event) => {
     event.preventDefault();
   
-    const hashedPassword = bcrypt.hashSync(password, 10);
     Axios.post('http://localhost:3001/login', {
       username: username,
-      password: hashedPassword, // Send the plain password to the server
+      password: password, // Send the plain password to the server
+    }).then((response) => {
+      if (response.status === 200) {
+        const successElement = document.getElementById('error-message');
+        successElement.style.color = 'green';
+        successElement.textContent = 'Logging in';
+
+        setTimeout(() => {
+          successElement.textContent = ''; // Clear the success message
+        }, 2000); // Display for 2 seconds (2000 milliseconds)
+        handleOpenHomePage();
+      }
+      console.log(response);
     }).catch((error) => {
-      if (error.response && error.response.status === 409) {
+      if (error.response) {
         const errorMessage = error.response.data;
         const errorElement = document.getElementById('error-message');
         errorElement.style.color = 'red';
