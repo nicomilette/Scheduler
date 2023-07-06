@@ -1,4 +1,4 @@
-/*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */
+/*! js-cookie v3.0.5 | MIT */
 
 /**
  * @license React
@@ -41,18 +41,13 @@
  */
 
 /**
- * @remix-run/router v1.7.0
- *
- * Copyright (c) Remix Software Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE.md file in the root directory of this source tree.
- *
- * @license MIT
+ * @license bcrypt.js (c) 2013 Daniel Wirtz <dcode@dcode.io>
+ * Released under the Apache License, Version 2.0
+ * see: https://github.com/dcodeIO/bcrypt.js for details
  */
 
 /**
- * React Router DOM v6.14.0
+ * @remix-run/router v1.7.0
  *
  * Copyright (c) Remix Software Inc.
  *
