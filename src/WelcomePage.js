@@ -64,10 +64,20 @@ function WelcomePage() {
   const handleLogin = (event) => {
     event.preventDefault();
   
-    Axios.post('http://localhost:3001/login', {
+    const isAuthenticated = Cookies.get('session_id') !== undefined && Cookies.get('session_id') !== '';
+
+    const loginData = {
       username: username,
-      password: password, // Send the plain password to the server
-    }).then((response) => {
+      password: password,
+    };
+  
+    if (isAuthenticated) {
+      loginData.session_id = Cookies.get('session_id');
+    }
+  
+
+    Axios.post('http://localhost:3001/login', loginData)
+    .then((response) => {
       if (response.status === 200) {
         const successElement = document.getElementById('error-message');
         successElement.style.color = 'green';
