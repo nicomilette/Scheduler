@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import './WelcomePage.css'; // Import the CSS file for styling
 import { BrowserRouter as Router, Link, Route, Routes, useNavigate } from 'react-router-dom';
 import Axios from 'axios';
-import HomePage from './HomePage';
 import bcrypt from 'bcryptjs'
+import Cookies from 'js-cookie';
+import ProtectedRoute from './ProtectedRoute';
+import HomePage from './HomePage';
 
 function WelcomePage() {
   const navigate = useNavigate();
@@ -74,6 +76,7 @@ function WelcomePage() {
         setTimeout(() => {
           successElement.textContent = ''; // Clear the success message
         }, 2000); // Display for 2 seconds (2000 milliseconds)
+        Cookies.set('session_id', response.data);
         handleOpenHomePage();
       }
       console.log(response);
@@ -125,8 +128,10 @@ function WelcomePage() {
         </div>
       </form>
       <Routes>
-        <Route path="/HomePage" exact element={<HomePage />} />
-      </Routes>
+      <Route element={<ProtectedRoute />}>
+                <Route element={<HomePage/>} path="/homepage" exact/>
+        </Route>
+        </Routes>
     </div>
   );
 }
