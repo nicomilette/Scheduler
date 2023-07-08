@@ -7,7 +7,10 @@
   padding: 20px;
   display: flex;
   flex-direction: column;
+  min-height: 100vh ;
 }
+
+
 
 .title{
   display: flex;
@@ -153,6 +156,7 @@
 }
 
 .task-list {
+  background-color: #1a1a1a;
   display: flex;
   flex-wrap: wrap;
   gap: 20px
@@ -165,10 +169,10 @@
   background-color: #222;
   color: #fff;
   padding: 10px;
-  margin-bottom: 10px;
   border-radius: 4px;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
   height: 0;
+  max-height: 40px;
   padding-bottom: calc(25% - 80px);
 
 }
@@ -207,6 +211,29 @@
   justify-content: flex-start;
   align-items: center;
   color: #cc0000;
+  
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+}
+
+.due-today{
+    
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  color: #27e216;
+  
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+}
+.due-tomorrow{
+    
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  color: #eaf829;
   
   position: absolute;
   bottom: 10px;

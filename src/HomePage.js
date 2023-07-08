@@ -4,6 +4,8 @@ import './HomePage.css';
 import './Calendar.css';
 import Cookies from 'js-cookie';
 import Axios from 'axios';
+import { v4 as uuidv4 } from 'uuid';
+
 
 function HomePage() {
   
@@ -24,7 +26,7 @@ function HomePage() {
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const popupRef = useRef(null);
-  const [selectedTaskIndex, setSelectedTaskIndex] = useState(-1);
+  const [selectedTaskIndex, setSelectedTaskIndex] = useState("");
 
 
   
@@ -45,7 +47,6 @@ function HomePage() {
     }).then((response) => {
       setTasks(response.data);
     }).catch((error) => {
-
       console.log(error);
     });
 
@@ -101,6 +102,7 @@ function HomePage() {
   }, [tasks]);
 
   const handleViewChange = (viewType) => {
+    setSelectedTaskIndex("");
     setSelectedView(viewType);
   };
 
@@ -136,14 +138,14 @@ function HomePage() {
       }
   
       if (isValid) {
-
+        var unique_id = uuidv4();
         Axios.post('http://localhost:3001/posttask', {
           session_id: Cookies.get("session_id"),
           title: title,
           details: details,
           date: convertedDate,
           time: time,
-          index: tasks.length,
+          unique_id: unique_id,
         }).then((response) => {
           console.log(response.data);
         }).catch((error) => {
@@ -151,13 +153,13 @@ function HomePage() {
           console.log(error);
         });
 
-
-        const newTask = { title, details, date: convertedDate, time };
+        const newTask = { title, details, date: convertedDate, time, unique_id };
         setTasks([...tasks, newTask]);
         setTitle('');
         setDetails('');
         setDate('');
         setTime('');
+        setSelectedTaskIndex('');
   
   
         setShowNewTaskPopup(false);
@@ -171,11 +173,12 @@ function HomePage() {
   };
   
   
+  
 
-  const handleDeleteTask = (index) => {
+  const handleDeleteTask = (index, unique_id) => {
     Axios.post('http://localhost:3001/deletetask', {
       session_id: Cookies.get("session_id"),
-      index: index,
+      unique_id: unique_id,
     });
     const updatedTasks = [...tasks];
     updatedTasks.splice(index, 1);
@@ -197,7 +200,7 @@ function HomePage() {
 {/*BUTTON*/}
   return (
 
-
+    
     <div className="home-page">
       <div className="title">
       <h1 className="home-title">Scheduler</h1>
@@ -254,7 +257,7 @@ function HomePage() {
         }}
           tileContent={({ date, view }) => {
             const tasksOnDay = tasks.filter((task) => {
-              const taskDate = new Date(new Date(task.date).setDate(new Date(task.date).getDate() + 1)).toLocaleDateString();
+              const taskDate = new Date(new Date(task.date).setDate(new Date(task.date).getDate() + 1) ).toLocaleDateString();
               return taskDate === date.toLocaleDateString();
             });
 
@@ -265,7 +268,13 @@ function HomePage() {
                     <button
                       key={index}
                       className="my-calendar-task"
-                      onClick={() => setSelectedTaskIndex(index)}
+                      onClick={() => 
+                        {
+                          setSelectedTaskIndex(task.unique_id);
+                          console.log(task.title)
+                        }
+                        
+                      }
                     >
                       {task.title}
                     </button>
@@ -317,9 +326,19 @@ function HomePage() {
                     </p>
                     <p>{task.details}</p>
                     {/* Check if task is past due */}
-                    {new Date(task.date) < new Date() && (
+                    {new Date(task.date) < new Date(new Date().setDate(new Date().getDate() - 1)) && (
                       <div className="past-due">
                         <p className="past-due-label">Past Due</p>
+                      </div>
+                    )}
+                    {new Date(task.date).toDateString() == new Date(new Date().setDate(new Date().getDate() - 1)).toDateString()&& (
+                      <div className="due-today">
+                        <p className="due-today-label">Due Today</p>
+                      </div>
+                    )}
+                    {new Date(task.date).toDateString() == new Date(new Date().setDate(new Date().getDate())).toDateString()&& (
+                      <div className="due-tomorrow">
+                        <p className="due-tomorrow-label">Due Tomorrow</p>
                       </div>
                     )}
                   </>
@@ -328,7 +347,7 @@ function HomePage() {
                   {!task.date && (
                     <p>No date specified</p>
                   )}
-                  <button onClick={() => handleDeleteTask(index)}>Delete</button>
+                  <button onClick={() => handleDeleteTask(index, task.unique_id)}>Delete</button>
                 </div>
               ))
           ) : (
@@ -344,7 +363,7 @@ function HomePage() {
 {/*NEW TASK POPUP*/}
 
 
-      {showNewTaskPopup && (
+      {(showNewTaskPopup) && (
         <div className="new-task-popup" ref={popupRef}
         
         style={{ top: dragPosition.y, left: dragPosition.x }}
@@ -387,18 +406,21 @@ function HomePage() {
 
 
 
-{selectedTaskIndex !== -1 && (
+{(selectedTaskIndex !== "") && (
   <div className="task-popup">
-    <h2>{tasks[selectedTaskIndex].title}</h2>
-    <p>Date: {tasks[selectedTaskIndex].date}</p>
-    <p>Time: {tasks[selectedTaskIndex].time}</p>
-    <p>Details: {tasks[selectedTaskIndex].details}</p>
-    <button onClick={() => setSelectedTaskIndex(-1)}>Close</button>
+    <h2>{tasks.find(task => task.unique_id === selectedTaskIndex).title}</h2>
+    <p>Date: {tasks.find(task => task.unique_id === selectedTaskIndex).date}</p>
+    <p>Time: {tasks.find(task => task.unique_id === selectedTaskIndex).time}</p>
+    <p>Details: {tasks.find(task => task.unique_id === selectedTaskIndex).details}</p>
+    <button onClick={() => setSelectedTaskIndex("")}>Close</button>
   </div>
 )}
 
 
 
+  
+
+{/*<div className='end-space'></div>*/}
     </div>
   );
 }
