@@ -176,19 +176,19 @@ function WelcomePage() {
           <div id="error-message"></div>
           <div className="requirements-container">
             <p className={hasUppercase ? 'valid' : 'invalid'}>
-              Has uppercase: {hasUppercase ? 'Yes' : 'No'}
+              Has uppercase
             </p>
             <p className={hasLowercase ? 'valid' : 'invalid'}>
-              Has lowercase: {hasLowercase ? 'Yes' : 'No'}
+              Has lowercase
             </p>
             <p className={hasNumber ? 'valid' : 'invalid'}>
-              Has number: {hasNumber ? 'Yes' : 'No'}
+              Has number
             </p>
             <p className={hasSpecialChar ? 'valid' : 'invalid'}>
-              Has special character: {hasSpecialChar ? 'Yes' : 'No'}
+              Has special character
             </p>
             <p className={isLongEnough ? 'valid' : 'invalid'}>
-              At least 8 characters: {isLongEnough ? 'Yes' : 'No'}
+              At least 8 characters
             </p>
           </div>
         </div>
