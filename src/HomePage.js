@@ -2,14 +2,17 @@ import React, { useState, useEffect, useRef } from 'react';
 import Calendar from 'react-calendar';
 import './HomePage.css';
 import './Calendar.css';
+import Cookies from 'js-cookie';
+import Axios from 'axios';
 
 function HomePage() {
-
+  
 
   {/*DATA MEMBERS*/}
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedView, setSelectedView] = useState('calendar');
   const [tasks, setTasks] = useState([]);
+  const [username, setUsername] = useState("");
   const [title, setTitle] = useState('');
   const [details, setDetails] = useState('');
   const [date, setDate] = useState('');
@@ -24,7 +27,28 @@ function HomePage() {
   const [selectedTaskIndex, setSelectedTaskIndex] = useState(-1);
 
 
+  
+
   useEffect(() => {
+
+    Axios.post('http://localhost:3001/fetchusername', {
+      session_id: Cookies.get("session_id"),
+    }).then((response) => {
+      setUsername(response.data);
+    }).catch((error) => {
+
+      console.log(error);
+    });
+
+    Axios.post('http://localhost:3001/fetchtasks', {
+      session_id: Cookies.get("session_id"),
+    }).then((response) => {
+      setTasks(response.data);
+    }).catch((error) => {
+
+      console.log(error);
+    });
+
     const handleMouseMove = (e) => {
       if (isDragging) {
         const newX = e.clientX - dragOffset.x;
@@ -112,13 +136,33 @@ function HomePage() {
       }
   
       if (isValid) {
+
+        Axios.post('http://localhost:3001/posttask', {
+          session_id: Cookies.get("session_id"),
+          title: title,
+          details: details,
+          date: convertedDate,
+          time: time,
+          index: tasks.length,
+        }).then((response) => {
+          console.log(response.data);
+        }).catch((error) => {
+
+          console.log(error);
+        });
+
+
         const newTask = { title, details, date: convertedDate, time };
         setTasks([...tasks, newTask]);
         setTitle('');
         setDetails('');
         setDate('');
         setTime('');
+  
+  
         setShowNewTaskPopup(false);
+
+
       }
     } else {
       // Display an error or provide feedback to the user about the required fields
@@ -129,10 +173,25 @@ function HomePage() {
   
 
   const handleDeleteTask = (index) => {
+    Axios.post('http://localhost:3001/deletetask', {
+      session_id: Cookies.get("session_id"),
+      index: index,
+    });
     const updatedTasks = [...tasks];
     updatedTasks.splice(index, 1);
     setTasks(updatedTasks);
   };
+
+
+  const handleLogOut = () => {
+    Axios.post('http://localhost:3001/logout', {
+      session_id: Cookies.get("session_id"),
+    });
+
+
+    Cookies.set('session_id', '');
+    window.location.reload();
+  }
 
  
 {/*BUTTON*/}
@@ -140,11 +199,23 @@ function HomePage() {
 
 
     <div className="home-page">
+      <div className="title">
       <h1 className="home-title">Scheduler</h1>
+      <h1 className="username-title">{username}</h1>
+      </div>
+    <div className='button-options-wrap'>
 
-      <button className="new-task-button" onClick={handleNewTaskClick}>
+      
+      <button className="button-options" onClick={handleNewTaskClick}>
         New
       </button>
+
+      <button className="button-options" onClick={handleLogOut}>
+        Log Out
+      </button>
+    </div>
+
+
 
       <div className="view-options">
         <button
@@ -241,7 +312,7 @@ function HomePage() {
                     {task.date && (
                 <>
                     <p>
-                      {new Date(new Date(task.date).setDate(new Date(task.date).getDate() + 1)).toLocaleDateString()}{' '}
+                      {new Date(new Date(task.date).setDate(new Date(task.date).getDate())).toLocaleDateString()}{' '}
                       {task.time && <span>{task.time}</span>}
                     </p>
                     <p>{task.details}</p>
