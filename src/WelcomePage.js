@@ -25,8 +25,11 @@ function WelcomePage() {
   };
 
   const handleUsernameChange = (event) => {
-    setUsername(event.target.value);
+    const cleanedValue = event.target.value.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+    setUsername(cleanedValue);
   };
+  
+  
 
   const handlePasswordChange = (event) => {
     const newPassword = event.target.value;
