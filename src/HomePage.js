@@ -321,7 +321,7 @@ function HomePage() {
                     {task.date && (
                 <>
                     <p>
-                      {new Date(new Date(task.date).setDate(new Date(task.date).getDate())).toLocaleDateString()}{' '}
+                      {new Date(new Date(task.date).setDate(new Date(task.date).getDate() + 1)).toLocaleDateString()}{' '}
                       {task.time && <span>{task.time}</span>}
                     </p>
                     <p>{task.details}</p>

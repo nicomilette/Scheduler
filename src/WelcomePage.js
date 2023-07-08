@@ -7,12 +7,18 @@ import Cookies from 'js-cookie';
 import ProtectedRoute from './ProtectedRoute';
 import HomePage from './HomePage';
 
+
 function WelcomePage() {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loginStatus, setLoginStatus] = useState(false);
-
+  const [isLoginDisabled, setIsLoginDisabled] = useState(true);
+  const [hasUppercase, setHasUppercase] = useState(false);
+  const [hasLowercase, setHasLowercase] = useState(false);
+  const [hasNumber, setHasNumber] = useState(false);
+  const [hasSpecialChar, setHasSpecialChar] = useState(false);
+  const [isLongEnough, setIsLongEnough] = useState(false);
 
   const handleOpenHomePage = () => {
     navigate('/homepage');
@@ -23,11 +29,40 @@ function WelcomePage() {
   };
 
   const handlePasswordChange = (event) => {
-    setPassword(event.target.value);
+    const newPassword = event.target.value;
+    setPassword(newPassword);
+
+    const uppercaseRegex = /[A-Z]/;
+    const lowercaseRegex = /[a-z]/;
+    const numberRegex = /[0-9]/;
+    const specialCharRegex = /[!@#$%^&*()\-_=+{}[\]|;:'",.<>/?]/;
+
+    setHasUppercase(uppercaseRegex.test(newPassword));
+    setHasLowercase(lowercaseRegex.test(newPassword));
+    setHasNumber(numberRegex.test(newPassword));
+    setHasSpecialChar(specialCharRegex.test(newPassword));
+    setIsLongEnough(newPassword.length >= 8);
+
+    const meetsMinimumRequirements = hasUppercase && hasLowercase && hasNumber && hasSpecialChar && isLongEnough;
+   
+
+    setIsLoginDisabled(!meetsMinimumRequirements);
   };
 
   const handleSignUp = (event) => {
+    
     event.preventDefault();
+    if(!(hasUppercase && hasLowercase && hasNumber && hasSpecialChar && isLongEnough)){
+      const errorElement = document.getElementById('error-message');
+      errorElement.style.color = 'red';
+      errorElement.textContent = 'Password does not meet requirements';
+
+      setTimeout(() => {
+        errorElement.textContent = ''; // Clear the success message
+      }, 2000);
+      
+    }
+    else{
   
     const hashedPassword = bcrypt.hashSync(password, 10);
 
@@ -59,8 +94,12 @@ function WelcomePage() {
           }, 2000); // Display for 2 seconds (2000 milliseconds)
         }
       });
+
+    }
+
+
   };
-  
+
   const handleLogin = (event) => {
     event.preventDefault();
   
@@ -128,13 +167,30 @@ function WelcomePage() {
           onChange={handlePasswordChange}
         />
         <div className="button-container">
-          <button type="submit" className="login-button" onClick={handleLogin}>
+          <button type="submit" className="login-button" onClick={handleLogin} >
             Login
           </button>
           <button type="submit" className="signup-button" onClick={handleSignUp}>
             Sign up
           </button>
           <div id="error-message"></div>
+          <div className="requirements-container">
+            <p className={hasUppercase ? 'valid' : 'invalid'}>
+              Has uppercase: {hasUppercase ? 'Yes' : 'No'}
+            </p>
+            <p className={hasLowercase ? 'valid' : 'invalid'}>
+              Has lowercase: {hasLowercase ? 'Yes' : 'No'}
+            </p>
+            <p className={hasNumber ? 'valid' : 'invalid'}>
+              Has number: {hasNumber ? 'Yes' : 'No'}
+            </p>
+            <p className={hasSpecialChar ? 'valid' : 'invalid'}>
+              Has special character: {hasSpecialChar ? 'Yes' : 'No'}
+            </p>
+            <p className={isLongEnough ? 'valid' : 'invalid'}>
+              At least 8 characters: {isLongEnough ? 'Yes' : 'No'}
+            </p>
+          </div>
         </div>
       </form>
       <Routes>

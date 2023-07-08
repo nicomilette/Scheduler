@@ -337,3 +337,23 @@
 .task-popup button:focus {
   outline: none;
 }
+
+.requirements-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.requirements-container p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.valid {
+  color: green;
+}
+
+.invalid {
+  color: red;
+}
