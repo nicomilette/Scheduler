@@ -69,7 +69,7 @@ function WelcomePage() {
   
     const hashedPassword = bcrypt.hashSync(password, 10);
 
-    Axios.post('http://localhost:3001/register', {
+    Axios.post('/register', {
       username: username,
       password: hashedPassword, // Send the plain password to the server
     })
@@ -118,7 +118,7 @@ function WelcomePage() {
     }
   
 
-    Axios.post('http://localhost:3001/login', loginData)
+    Axios.post('/login', loginData)
     .then((response) => {
       if (response.status === 200) {
         const successElement = document.getElementById('error-message');

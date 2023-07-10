@@ -33,7 +33,7 @@ function HomePage() {
 
   useEffect(() => {
 
-    Axios.post('http://localhost:3001/fetchusername', {
+    Axios.post('/fetchusername', {
       session_id: Cookies.get("session_id"),
     }).then((response) => {
       setUsername(response.data);
@@ -42,7 +42,7 @@ function HomePage() {
       console.log(error);
     });
 
-    Axios.post('http://localhost:3001/fetchtasks', {
+    Axios.post('/fetchtasks', {
       session_id: Cookies.get("session_id"),
     }).then((response) => {
       setTasks(response.data);
@@ -139,7 +139,7 @@ function HomePage() {
   
       if (isValid) {
         var unique_id = uuidv4();
-        Axios.post('http://localhost:3001/posttask', {
+        Axios.post('/posttask', {
           session_id: Cookies.get("session_id"),
           title: title,
           details: details,
@@ -176,7 +176,7 @@ function HomePage() {
   
 
   const handleDeleteTask = (index, unique_id) => {
-    Axios.post('http://localhost:3001/deletetask', {
+    Axios.post('/deletetask', {
       session_id: Cookies.get("session_id"),
       unique_id: unique_id,
     });
@@ -187,7 +187,7 @@ function HomePage() {
 
 
   const handleLogOut = () => {
-    Axios.post('http://localhost:3001/logout', {
+    Axios.post('/logout', {
       session_id: Cookies.get("session_id"),
     });
 
@@ -257,6 +257,7 @@ function HomePage() {
         }}
           tileContent={({ date, view }) => {
             const tasksOnDay = tasks.filter((task) => {
+            	
               const taskDate = new Date(new Date(task.date).setDate(new Date(task.date).getDate() + 1) ).toLocaleDateString();
               return taskDate === date.toLocaleDateString();
             });
